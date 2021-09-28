@@ -1,16 +1,23 @@
-
 image: maven:3.6.3
 
 pipelines:
   default:
     - parallel:
-      - step:
-          name: Build and Test
-          caches:
-            - maven
-          script:
-            - mvn -B verify --file pom.xml
-          after-script:
+        - step:
+            name: Build and Test
+            caches:
+              - maven
+            script:
+              - mvn -B verify --file pom.xml
+            after-script:
               # Collect checkstyle results, if any, and convert to Bitbucket Code Insights.
-            - pipe: atlassian/checkstyle-report:0.2.0
-     
+              - pipe: atlassian/checkstyle-report:0.2.0
+            services:
+              - mongo
+definitions:
+  services:
+    mongo:
+      image: mongo
+      variables:
+        MONGO_INITDB_ROOT_USERNAME: 'root'
+        MONGO_INITDB_ROOT_PASSWORD: 'root'

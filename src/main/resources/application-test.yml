@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      auto-index-creation: true
+      uri: mongodb://root:root@localhost:27017/telelogx_test
+  config:
+    activate:
+      on-profile: test

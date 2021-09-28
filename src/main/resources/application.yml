@@ -1,0 +1,8 @@
+spring:
+  thymeleaf:
+    prefix: file:///${user.dir}//target//classes//static/
+  data:
+    mongodb:
+      auto-index-creation: true
+  profiles:
+    active: dev

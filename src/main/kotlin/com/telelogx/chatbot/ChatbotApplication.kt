@@ -1,4 +1,4 @@
-package com.colureware.chatbot
+package com.telelogx.chatbot
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
