@@ -1,9 +1,11 @@
 package com.telelogx.chatbot.service
 
+import com.telelogx.chatbot.database.extensions.toResponse
 import com.telelogx.chatbot.database.model.User
 import com.telelogx.chatbot.database.repositry.UserRepository
 import com.telelogx.chatbot.database.role.Role
-import com.telelogx.chatbot.exceptions.ServiceException
+import com.telelogx.chatbot.exceptions.DuplicatedEntityException
+import com.telelogx.chatbot.exceptions.NoEntityFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -21,19 +23,22 @@ internal class UserServiceTest {
     @Autowired
     lateinit var userRepository: UserRepository
 
-    private val user = User("testUser", "test@telelogx.com", "123", Role.USER)
+    private val email = "test@telelogx.com"
+    private val user = User("testUser", email, "123", Role.USER)
+
 
     @BeforeEach
-    internal fun tearDown() {
+    internal fun setUp() {
         userRepository.deleteAll()
     }
+
 
     @Test
     internal fun `user should be stored`() {
 
         userService.create(user)
 
-        assertThat(userService.getAll()).contains(user)
+        assertThat(userService.getAll()).contains(user.toResponse())
     }
 
     @Test
@@ -41,7 +46,7 @@ internal class UserServiceTest {
 
         userService.create(user)
 
-        userService.delete(user)
+        userService.delete(email)
 
         assertThat(userService.getAll()).isEmpty()
     }
@@ -53,9 +58,13 @@ internal class UserServiceTest {
 
         assertThatThrownBy {
             userService.create(user)
-        }.isInstanceOf(ServiceException::class.java)
-            .hasMessage("The user email is already exists")
+        }.isInstanceOf(DuplicatedEntityException::class.java)
+            .hasMessage("email is already exists")
     }
 
-
+    @Test
+    internal fun `delete unexciting user should throw an exception`() {
+        assertThatThrownBy { userService.delete(email) }
+            .isInstanceOf(NoEntityFoundException::class.java)
+    }
 }
