@@ -60,7 +60,7 @@ internal class UserServiceTest {
         assertThatThrownBy {
             userService.create(user)
         }.isInstanceOf(DuplicatedEntityException::class.java)
-            .hasMessage("email is already exists")
+            .hasMessage("email with following is already exists test@telelogx.com")
     }
 
     @Test
