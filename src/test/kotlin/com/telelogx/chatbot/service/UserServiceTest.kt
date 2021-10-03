@@ -1,6 +1,6 @@
 package com.telelogx.chatbot.service
 
-import com.telelogx.chatbot.database.extensions.toResponse
+import com.telelogx.chatbot.api.response.toResponse
 import com.telelogx.chatbot.database.model.User
 import com.telelogx.chatbot.database.repositry.UserRepository
 import com.telelogx.chatbot.database.role.Role
@@ -24,7 +24,7 @@ internal class UserServiceTest {
     lateinit var userRepository: UserRepository
 
     private val email = "test@telelogx.com"
-    private val user = User("testUser", email, "123", Role.USER)
+    private val user = User("testUser", email, "12345678$", Role.USER, "1")
 
 
     @BeforeEach
@@ -50,6 +50,7 @@ internal class UserServiceTest {
 
         assertThat(userService.getAll()).isEmpty()
     }
+
 
     @Test
     internal fun `different users with same email should not be_registered`() {

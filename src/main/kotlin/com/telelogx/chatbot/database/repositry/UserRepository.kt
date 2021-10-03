@@ -9,5 +9,5 @@ interface UserRepository : MongoRepository<User, String> {
 
     fun existsByEmail(email: String): Boolean
     fun deleteByEmail(email: String)
-
+    fun findByEmail(email: String): User?
 }
