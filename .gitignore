@@ -32,7 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-### react ###
+### vue ###
 src/webapp/node_modules/
 /.pnp
 .pnp.js
@@ -41,7 +41,7 @@ src/webapp/node_modules/
 src/webapp/coverage
 
 # production
-src/webapp/build
+src/webapp/dist
 
 # misc
 .DS_Store
