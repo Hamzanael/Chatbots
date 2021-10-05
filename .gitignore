@@ -36,7 +36,7 @@ build/
 src/webapp/node_modules/
 /.pnp
 .pnp.js
-
+package-lock.json
 # testing
 src/webapp/coverage
 
