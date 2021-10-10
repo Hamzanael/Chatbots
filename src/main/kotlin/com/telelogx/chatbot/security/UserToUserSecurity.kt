@@ -1,6 +1,6 @@
 package com.telelogx.chatbot.security
 
-import com.telelogx.chatbot.database.model.User
+import com.telelogx.chatbot.model.User
 
 fun User.toSecurityDetails(): UserSecurityDetails {
     return UserSecurityDetails(

@@ -1,3 +1,7 @@
+application:
+  jwt:
+    secretKey: TelelogxTelelogxTelelogxTelelogxTelelogxTelelogxTelelogx
+    tokenExpirationAfterDays: 14
 spring:
   data:
     mongodb:

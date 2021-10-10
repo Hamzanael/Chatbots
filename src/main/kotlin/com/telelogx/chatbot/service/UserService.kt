@@ -1,18 +1,18 @@
 package com.telelogx.chatbot.service
 
-import com.telelogx.chatbot.api.response.UserResponse
-import com.telelogx.chatbot.api.response.toResponse
-import com.telelogx.chatbot.database.model.User
-import com.telelogx.chatbot.database.repositry.UserRepository
-import com.telelogx.chatbot.exceptions.DuplicatedEntityException
-import com.telelogx.chatbot.exceptions.NoEntityFoundException
-import com.telelogx.chatbot.exceptions.WeakPasswordException
+import com.telelogx.chatbot.model.User
+import com.telelogx.chatbot.model.repositry.UserRepository
 import com.telelogx.chatbot.security.toSecurityDetails
+import com.telelogx.chatbot.service.exceptions.DuplicatedEntityException
+import com.telelogx.chatbot.service.exceptions.NoEntityFoundException
+import com.telelogx.chatbot.service.exceptions.WeakPasswordException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import java.util.Optional
 import java.util.regex.Pattern
 
 @Service
@@ -23,43 +23,61 @@ class UserService : UserDetailsService {
     @Autowired
     private lateinit var passwordEncoder: PasswordEncoder
 
-    fun create(user: User): String {
+    fun create(user: User): User {
         if (!userRepository.existsByEmail(user.email)) {
             checkThePasswordComplexity(user.password)
-            val registeredUser = userRepository.insert(user.copy(password = passwordEncoder.encode(user.password)))
-            return registeredUser._id
+            return userRepository.insert(user.copy(password = passwordEncoder.encode(user.password)))
         } else {
             throw DuplicatedEntityException("email with following is already exists ${user.email}")
         }
     }
 
-    fun delete(email: String): String {
-        return withUser(email) {
+    fun delete(id: String): User {
+        return withUser(id) {
             userRepository.delete(it)
+            return@withUser it
         }
     }
 
-    fun getAll(): List<UserResponse> {
+    fun getAll(): List<User> {
         return userRepository.findAll()
-            .map { it.toResponse() }
     }
 
-    fun update(user: User): String {
-        return withUser(user.email) {
+    fun getUserByEmail(email: String): User? {
+        return userRepository.findByEmail(email)
+    }
+
+    fun getCurrentUser(): User {
+        val user = userRepository.findByEmail(SecurityContextHolder.getContext().authentication.principal.toString())
+        if (user != null) {
+            return user
+        } else throw NoEntityFoundException("user doesn't exist")
+    }
+
+    fun update(user: User, id: String): User {
+        return withUser(id) {
             checkThePasswordComplexity(user.password)
-            val updatedUser = user.copy(password = passwordEncoder.encode(user.password));
-            updatedUser._id = it._id
-            userRepository.save(updatedUser)
+            val updatedUser = user.copy(password = passwordEncoder.encode(user.password))
+            updatedUser._id = id
+            return@withUser userRepository.save(updatedUser)
         }
     }
 
-    private fun withUser(email: String, dataBaseCRUDCommand: (user: User) -> Unit): String {
-        val user: User? = userRepository.findByEmail(email)
-        if (user != null) {
-            dataBaseCRUDCommand(user)
-            return user._id
+    private fun withUser(id: String, dataBaseCRUDCommand: (user: User) -> User): User {
+        val user: Optional<User> = userRepository.findById(id)
+        if (user.isPresent) {
+            return dataBaseCRUDCommand(user.get())
         } else {
             throw NoEntityFoundException("user does not exist")
+        }
+    }
+
+    override fun loadUserByUsername(email: String): UserDetails {
+        val user = userRepository.findByEmail(email)
+        if (user == null) {
+            throw NoEntityFoundException("this email $email is not registered")
+        } else {
+            return user.toSecurityDetails()
         }
     }
 
@@ -74,9 +92,8 @@ class UserService : UserDetailsService {
         }
     }
 
-    override fun loadUserByUsername(emial: String): UserDetails {
-        return userRepository.findByEmail(emial)!!.toSecurityDetails()
-    }
-
-
 }
+
+
+
+

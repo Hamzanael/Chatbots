@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ChatbotApplication
 
 fun main(args: Array<String>) {
-	runApplication<ChatbotApplication>(*args)
+    runApplication<ChatbotApplication>(*args)
 }

@@ -1,11 +1,10 @@
 package com.telelogx.chatbot.service
 
-import com.telelogx.chatbot.api.response.toResponse
-import com.telelogx.chatbot.database.model.User
-import com.telelogx.chatbot.database.repositry.UserRepository
-import com.telelogx.chatbot.database.role.Role
-import com.telelogx.chatbot.exceptions.DuplicatedEntityException
-import com.telelogx.chatbot.exceptions.NoEntityFoundException
+import com.telelogx.chatbot.model.Role
+import com.telelogx.chatbot.model.User
+import com.telelogx.chatbot.model.repositry.UserRepository
+import com.telelogx.chatbot.service.exceptions.DuplicatedEntityException
+import com.telelogx.chatbot.service.exceptions.NoEntityFoundException
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -38,15 +37,16 @@ internal class UserServiceTest {
 
         userService.create(user)
 
-        assertThat(userService.getAll()).contains(user.toResponse())
+        assertThat(userService.getAll()).usingElementComparatorIgnoringFields("_id", "password")
+            .contains(user)
     }
 
     @Test
     internal fun `user should be deleted if exist`() {
 
-        userService.create(user)
+        val userId = userService.create(user)
 
-        userService.delete(email)
+        userService.delete(userId._id)
 
         assertThat(userService.getAll()).isEmpty()
     }

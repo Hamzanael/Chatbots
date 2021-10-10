@@ -1,9 +1,8 @@
-<script setup>
-import Login from "./components/login/Login.vue";</script>
+<script setup></script>
 
 <template>
   <div class="app-wrapper app-root">
-    <Login/>
+    <router-view></router-view>
   </div>
 </template>
 

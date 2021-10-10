@@ -1,10 +1,12 @@
 package com.telelogx.chatbot.api.response
 
-import com.telelogx.chatbot.database.model.User
+import com.telelogx.chatbot.model.User
 
 fun User.toResponse(): UserResponse {
     return UserResponse(
-        this.fullName, this.email,
+        this._id,
+        this.fullName,
+        this.email,
         this.role,
         this.accountId,
         this.isEnabled

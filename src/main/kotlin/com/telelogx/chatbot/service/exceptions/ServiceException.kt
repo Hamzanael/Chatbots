@@ -1,6 +1,6 @@
-package com.telelogx.chatbot.exceptions
+package com.telelogx.chatbot.service.exceptions
 
-class DuplicatedEntityException : ServiceException {
+open class ServiceException : Exception {
     constructor(message: String?, cause: Throwable?) : super(message, cause)
     constructor(message: String?) : super(message)
 }

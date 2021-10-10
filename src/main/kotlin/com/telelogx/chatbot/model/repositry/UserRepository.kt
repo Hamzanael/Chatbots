@@ -1,6 +1,6 @@
-package com.telelogx.chatbot.database.repositry
+package com.telelogx.chatbot.model.repositry
 
-import com.telelogx.chatbot.database.model.User
+import com.telelogx.chatbot.model.User
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 

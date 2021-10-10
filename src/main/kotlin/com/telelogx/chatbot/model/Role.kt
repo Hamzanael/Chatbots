@@ -1,4 +1,4 @@
-package com.telelogx.chatbot.database.role
+package com.telelogx.chatbot.model
 
 enum class Role {
     SUPER_ADMIN,

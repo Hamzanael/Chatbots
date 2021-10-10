@@ -1,8 +1,8 @@
 package com.telelogx.chatbot.api
 
 import com.google.gson.Gson
-import com.telelogx.chatbot.database.model.User
-import com.telelogx.chatbot.database.role.Role.USER
+import com.telelogx.chatbot.model.Role.USER
+import com.telelogx.chatbot.model.User
 import com.telelogx.chatbot.service.UserService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -11,7 +11,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.security.test.context.support.WithMockUser
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
-@WebMvcTest
+@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration
 internal class UserControllerTest {
@@ -46,9 +46,9 @@ internal class UserControllerTest {
     @BeforeEach
     internal fun setUp() {
         testUser._id = "615961813245c43f09273d6f"
-        `when`(userService.update(testUser)).thenReturn(testUser._id)
-        `when`(userService.delete(testUser.email)).thenReturn(testUser._id)
-        `when`(userService.create(testUser)).thenReturn(testUser._id)
+        `when`(userService.update(testUser, testUser._id)).thenReturn(testUser)
+        `when`(userService.delete(testUser._id)).thenReturn(testUser)
+        `when`(userService.create(testUser)).thenReturn(testUser)
     }
 
     @Test
@@ -67,9 +67,9 @@ internal class UserControllerTest {
     fun `unauthorized user should throw an exception`() {
 
         val mvcResult = this.mockMvc.perform(get("/api/v1/1/users"))
+            .andExpect { status().isUnauthorized }
             .andReturn()
         assertThat(mvcResult.response.contentAsString).contains("This user doesn't has authority to use this endpoint")
-
 
     }
 
@@ -94,7 +94,7 @@ internal class UserControllerTest {
     fun `authorized user should edit old user`() {
 
         val mvcResult = this.mockMvc.perform(
-            put("/api/v1/1/users")
+            put("/api/v1/1/users/" + testUser._id)
                 .content(jsonUser)
                 .contentType(APPLICATION_JSON)
         )
@@ -102,7 +102,7 @@ internal class UserControllerTest {
             .andReturn()
 
         assertThat(mvcResult.response.contentAsString).contains(testUser._id)
-        verify(userService).update(testUser)
+        verify(userService).update(testUser, testUser._id)
 
     }
 

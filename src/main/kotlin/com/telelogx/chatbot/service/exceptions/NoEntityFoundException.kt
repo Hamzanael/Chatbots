@@ -1,6 +1,6 @@
-package com.telelogx.chatbot.exceptions
+package com.telelogx.chatbot.service.exceptions
 
-open class ServiceException : Exception {
+class NoEntityFoundException : ServiceException {
     constructor(message: String?, cause: Throwable?) : super(message, cause)
     constructor(message: String?) : super(message)
 }
