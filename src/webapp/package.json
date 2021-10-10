@@ -22,7 +22,7 @@
     "foundation-sites": "^6.7.3",
     "node-sass": "^6.0.1",
     "postcss": "^8.3.8",
-    "sass": "^1.42.1",
+    "sass": "~1.32.6",
     "sass-loader": "^12.1.0",
     "tailwindcss": "^2.2.16",
     "vite": "^2.6.0"
