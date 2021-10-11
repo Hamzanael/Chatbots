@@ -31,7 +31,7 @@ class JwtVerificationProcessor {
             .build()
             .parseClaimsJws(token)
     }
-
+    @SuppressWarnings("unchecked")
     fun authenticateUser(parsedToken: Jws<Claims>, request: HttpServletRequest) {
         val jwtBody = parsedToken.body
         val authorizationList = (jwtBody["authorities"] as List<Map<String, String>>).map {

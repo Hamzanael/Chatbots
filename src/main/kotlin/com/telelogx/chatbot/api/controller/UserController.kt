@@ -4,6 +4,7 @@ import com.telelogx.chatbot.api.response.UserResponse
 import com.telelogx.chatbot.api.response.toResponse
 import com.telelogx.chatbot.model.User
 import com.telelogx.chatbot.service.UserService
+import com.telelogx.chatbot.service.exceptions.NoEntityFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus.ACCEPTED
 import org.springframework.http.HttpStatus.CREATED
@@ -44,12 +45,11 @@ class UserController {
 
     @DeleteMapping("{id}")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_SUPER_ADMIN')")
-    fun deleteUser(@PathVariable accountId: String, @PathVariable("id") id: String)
-            : ResponseEntity<UserResponse> {
-        val user = userService.delete(id)
-        return ResponseEntity(
-            user.toResponse(), ACCEPTED
-        )
+    fun deleteUser(@PathVariable accountId: String, @PathVariable("id") id: String) {
+        try {
+            userService.delete(id)
+        } catch (exception: NoEntityFoundException) {
+        }
     }
 
     @PutMapping("{id}")

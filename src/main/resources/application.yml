@@ -6,3 +6,5 @@ spring:
       auto-index-creation: true
   profiles:
     active: dev
+mongock:
+  change-logs-scan-package: com.telelogx.chatbot.model.databaseChangeLog
